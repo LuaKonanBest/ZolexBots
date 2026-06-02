@@ -1,0 +1,126 @@
+<!DOCTYPE html><html>
+<head>
+    <title>AFK Bot Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body><h1>🤖 AFK Bot Dashboard</h1><div class="card">
+    <h2>Add Bot</h2><input id="username" placeholder="Bot Username">
+<input id="host" placeholder="Server IP">
+<input id="port" placeholder="25565">
+
+<button onclick="addBot()">Create Bot</button>
+
+</div><div class="card">
+    <h2>Bot List</h2>
+    <div id="bots"></div>
+</div><div class="card">
+    <h2>Console</h2>
+    <div id="console"></div>
+</div><script>
+const socket = io();
+
+socket.on("console", msg => {
+    const consoleBox = document.getElementById("console");
+
+    consoleBox.innerHTML += msg + "<br>";
+    consoleBox.scrollTop = consoleBox.scrollHeight;
+});
+
+async function loadBots() {
+    const res = await fetch("/bots");
+
+    if (!res.ok) {
+        location.href = "/";
+        return;
+    }
+
+    const bots = await res.json();
+
+    const container = document.getElementById("bots");
+
+    container.innerHTML = "";
+
+    bots.forEach(bot => {
+        container.innerHTML += `
+        <div class="bot">
+            <b>${bot.username}</b><br>
+            ${bot.host}:${bot.port}<br><br>
+
+            <button onclick="startBot('${bot.id}')">
+                Start
+            </button>
+
+            <button onclick="stopBot('${bot.id}')">
+                Stop
+            </button>
+
+            <br><br>
+
+            <input id="msg-${bot.id}"
+                   placeholder="Message or command">
+
+            <button onclick="sendChat('${bot.id}')">
+                Send
+            </button>
+        </div>
+        <hr>
+        `;
+    });
+}
+
+async function addBot() {
+    const username =
+        document.getElementById("username").value;
+
+    const host =
+        document.getElementById("host").value;
+
+    const port =
+        document.getElementById("port").value || 25565;
+
+    await fetch("/add-bot", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username,
+            host,
+            port
+        })
+    });
+
+    loadBots();
+}
+
+async function startBot(id) {
+    await fetch(`/start-bot/${id}`, {
+        method: "POST"
+    });
+}
+
+async function stopBot(id) {
+    await fetch(`/stop-bot/${id}`, {
+        method: "POST"
+    });
+}
+
+async function sendChat(id) {
+    const message =
+        document.getElementById(`msg-${id}`).value;
+
+    await fetch(`/chat/${id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message
+        })
+    });
+}
+
+loadBots();
+</script></body>
+</html> 
