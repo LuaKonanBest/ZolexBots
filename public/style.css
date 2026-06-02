@@ -1,0 +1,61 @@
+body {
+font-family: Arial, sans-serif;
+background: #0f172a;
+color: white;
+margin: 0;
+padding: 20px;
+}
+
+h1 {
+text-align: center;
+}
+
+.card {
+background: #1e293b;
+padding: 20px;
+border-radius: 12px;
+margin-bottom: 20px;
+}
+
+.login-box {
+width: 350px;
+margin: 120px auto;
+background: #1e293b;
+padding: 20px;
+border-radius: 12px;
+}
+
+input {
+width: 100%;
+padding: 10px;
+margin-top: 8px;
+margin-bottom: 10px;
+border: none;
+border-radius: 6px;
+box-sizing: border-box;
+}
+
+button {
+padding: 10px 15px;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+}
+
+button:hover {
+opacity: 0.9;
+}
+
+#console {
+background: black;
+color: #00ff00;
+padding: 10px;
+height: 300px;
+overflow-y: auto;
+border-radius: 6px;
+font-family: monospace;
+}
+
+.bot {
+padding: 10px;
+}
